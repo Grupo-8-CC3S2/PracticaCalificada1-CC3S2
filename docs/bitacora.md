@@ -5,7 +5,7 @@ Registro
 
  fecha : 14 setiembre
  Actividad/cambio: Revisión detallada del interprete bash, comnados internos (sustitucion  expansion), flags,configuraciones para rastreo de errores 
- Archivos: conceptos.sh , conceptos.md
+ Archivos: repaso.sh , comandos.md
  Observaciones: bash es muy poder
 
 
