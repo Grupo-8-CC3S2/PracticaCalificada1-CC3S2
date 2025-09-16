@@ -4,7 +4,7 @@ set -u
 set -o pipefail
 umask 022
 
-TARGET="${TARGET}"
+TARGET="${TARGET:-google.com}"
 DNS_SERVER="${DNS_SERVER}"
 OUT_DIR="out"
 mkdir -v -p "$OUT_DIR"
