@@ -1,13 +1,68 @@
-# Bitácora calificada-1
-## Actividad: 
+## Bitácora Sprint-1: Chequeo HTTP con script y pruebas Bats
+
+Estudiante: Quispe Villena
+
+### Ejemplo de uso del script /src/http_check.sh
+
+```bash
+TARGET=github.com ./src/http_check.sh
+```
+
+Se definio TARGET=github.com como dominio de prueba. El script http_check.sh ejecuta curl -I y guarda el resultado en out/http_check.txt
+
+Salida out/http_check.txt
+
+```
+HTTP CHECK (github.com)
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+HTTP/1.1 301 Moved Permanently
+Content-Length: 0
+Location: https://github.com/
+```
+
+El script funciona correctamente: crea el archivo y registra cabeceras HTTP. Tenemos un codigo "301 Moved Permanently" el cual significa que Github no está en HTTP, ahora está permanentemente en HTTPS
+
+### Pruebas con Bats
+
+El test test_http.bats verifica tres condiciones:
+- Que el archivo out/http_check.txt existe.
+- Que contiene HTTP CHECK (github.com).
+- Que incluye cabeceras HTTP válidas (líneas que empiezan con HTTP/
+Ademas tambien crea out/http_check.txt ya que usa el script /src/http_check.sh.
+
+Ejecucion de test:
+
+```bash
+bats tests/test_http.bats
+```
+
+Salida: 
+
+```
+test_http.bats
+ ✓ script genera archivo de salida con encabezado HTTP
+
+1 test, 0 failures
+```
+
+## Bitácora Sprint-1
+
+Estudiante: Flores villar
+
+### Actividad 1: 
 Revisión detallada del interprete bash, comnados internos (sustitucion  expansion), flags,configuraciones para rastreo de errores 
 Archivos: repaso.sh , comandos.md
 
-## Actividad:
+### Actividad 2:
 ejecucion del scripts de 
 Archivos: dns_check.sh  test_dns.bats Makefile 
 
-### Ejecucion del script bash
+#### Ejecucion del script bash
 ``sudo TARGET=example.com DNS_SERVER=8.8.8.8 bash src/dns_server.sh``
 
 el dominio de prueba es example.com , el servidor autoritativo es 8.8.8.8 uno de los que gestiona google
@@ -24,7 +79,7 @@ example.com.		8	IN	A	23.220.75.232
 ```
 el cuerpo de la respuesta indica que se dispone de varios ip's para example.com
 
-### Ejecucion del script bats
+#### Ejecucion del script bats
 la ejecucion se realiza mediante
 ``bats src/test_dns.bats``
 ```bash
@@ -39,4 +94,3 @@ test_dns.bats
 
 - Todas las tareas fueron probadas en Ubuntu 24.04.
 - Se usó Git para control de versiones.
-- Se creó `` para los últimos cambios y organización d
