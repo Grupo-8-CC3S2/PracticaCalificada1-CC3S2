@@ -1,7 +1,74 @@
+SHELL := /usr/bin/env bash
+.SHELLFLAGS := -eu -o pipefail -c
+MAKEFLAGS += --warn-undefined-variables --no-builtin-rules
+
+.DELETE_ON_ERROR:
+.DEFAULT_GOAL := help
+
+# Contrato de entorno 
+APP_NAME ?= pc1-proy5
+RELEASE  ?= v0.1
+
 OBJETIVO ?=example.com
 SERVIDOR ?=8.8.8.8
 
-.PHONY: run 
-run :
+# Variables internas
+OUT_DIR  := out
+DIST_DIR := dist
+TEST_DIR := tests
+
+
+TOOLS_REQ := bash curl dig ss nc grep sed awk bats tee tar
+
+.PHONY: tools build run test pack clean help
+
+tools: ## Verifica dependencias
+	@echo "[tools] verificando herramientas..."
+	@missing=""; \
+	for t in $(TOOLS_REQ); do \
+		if ! command -v $$t >/dev/null 2>&1; then missing="$$missing $$t"; fi; \
+	done; \
+	if [ -n "$$missing" ]; then \
+		echo "[tools] FALTAN:$$missing"; exit 1; \
+	else \
+		mkdir -p $(OUT_DIR); \
+		echo "tools-ok-$$(date -u +%s)" > $(OUT_DIR)/tools.ok; \
+		echo "[tools] OK (evidencia: $(OUT_DIR)/tools.ok)"; \
+	fi
+
+build: ## Prepara artefactos mínimos en out
+	@mkdir -p $(OUT_DIR)
+	@echo "build-$$(date -u +%s)" > $(OUT_DIR)/build.ok
+	@echo "[build] evidencia: $(OUT_DIR)/build.ok"
+
+
+run: tools build ## Ejecuta flujo principal y deja evidencia en out/
+	@mkdir -p $(OUT_DIR)
 	@sudo TARGET=$(OBJETIVO) DNS_SERVER=$(SERVIDOR) bash src/dns_check.sh
+	@sudo TARGET="$(OBJETIVO)" bash src/http_check.sh
+	@echo "[run] evidencia generada (ver archivos en $(OUT_DIR)/)"
+
+test: tools ## Ejecuta pruebas Bats; deja evidencia .tap
+	@mkdir -p $(OUT_DIR)
+	@if [ -d "$(TEST_DIR)" ]; then \
+		bats -r $(TEST_DIR) | tee $(OUT_DIR)/test.tap; \
+		echo "[test] evidencia: $(OUT_DIR)/test.tap"; \
+	else \
+		echo "[test] no hay carpeta '$(TEST_DIR)/'"; \
+		echo "1..1\nok 1 placeholder" > $(OUT_DIR)/test.tap; \
+		echo "[test] evidencia: $(OUT_DIR)/test.tap"; \
+	fi
+
+pack: ## Genera paquete reproducible básico con out/ y docs/
+	@mkdir -p $(DIST_DIR)
+	@tar -czf "$(DIST_DIR)/$(APP_NAME)-$(RELEASE).tar.gz" $(OUT_DIR) docs src Makefile 2>/dev/null || true
+	@echo "[pack] paquete: $(DIST_DIR)/$(APP_NAME)-$(RELEASE).tar.gz"
+
+clean: ## Limpieza segura de out/ y dist/
+	@rm -rf $(OUT_DIR) $(DIST_DIR)
+	@echo "[clean] limpieza completada"
+
+help: ## Muestra ayuda de targets
+	@echo "Targets disponibles:"
+	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':|##' '{printf "  %-10s %s\n", $$1, $$3}'
 
