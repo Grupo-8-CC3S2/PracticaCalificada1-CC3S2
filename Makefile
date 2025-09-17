@@ -13,8 +13,8 @@ MAKEFLAGS += --warn-undefined-variables --no-builtin-rules
 APP_NAME ?= pc1-proy5
 RELEASE  ?= v0.1
 
-OBJETIVO ?=example.com
-SERVIDOR ?=8.8.8.8
+TARGET ?=example.com
+DNS_SERVER ?=8.8.8.8
 
 # Variables internas
 OUT_DIR  := out
@@ -47,8 +47,8 @@ build: ## Prepara artefactos mínimos en out
 
 run: tools build ## Ejecuta flujo principal y deja evidencia en out/
 	@mkdir -p $(OUT_DIR)
-	@sudo TARGET=$(OBJETIVO) DNS_SERVER=$(SERVIDOR) bash src/dns_check.sh
-	@sudo TARGET="$(OBJETIVO)" bash src/http_check.sh
+	@sudo TARGET=$(TARGET) DNS_SERVER=$(DNS_SERVER) bash src/dns_check.sh
+	@sudo TARGET="$(TARGET)" bash src/http_check.sh
 	@echo "[run] evidencia generada (ver archivos en $(OUT_DIR)/)"
 
 test: tools ## Ejecuta pruebas Bats; deja evidencia .tap
@@ -105,8 +105,4 @@ status-monitor-tls: ## State systemd del servicio de monitoreo TLS
 logs-monitor-tls: ## Verificacion TLS con logs con journalctl
 	@sudo journalctl -u $(SERVICE) -f
 
-OBJETIVO ?=google.com
-SERVIDOR ?=8.8.8.8
-.PHONY: run-bash
-run-bash: clean
-	@ sudo TARGET=${OBJETIVO} DNS_SERVER=${SERVIDOR} bash src/dns_check.sh
+
