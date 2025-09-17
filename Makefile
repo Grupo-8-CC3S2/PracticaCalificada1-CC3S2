@@ -1,3 +1,7 @@
+APP_DIR := $(shell pwd)
+SERVICE := monitoreo-TLS.service
+SERVICE_PATH := /etc/systemd/system/$(SERVICE)
+
 SHELL := /usr/bin/env bash
 .SHELLFLAGS := -eu -o pipefail -c
 MAKEFLAGS += --warn-undefined-variables --no-builtin-rules
@@ -17,10 +21,9 @@ OUT_DIR  := out
 DIST_DIR := dist
 TEST_DIR := tests
 
-
 TOOLS_REQ := bash curl dig ss nc grep sed awk bats tee tar
 
-.PHONY: tools build run test pack clean help
+.PHONY: tools build run test pack clean help install-monitor-tls start-monitor-tls stop-monitor-tls status-monitor-tls delete-monitor-tls logs-monitor-tls
 
 tools: ## Verifica dependencias
 	@echo "[tools] verificando herramientas..."
@@ -71,6 +74,36 @@ clean: ## Limpieza segura de out/ y dist/
 help: ## Muestra ayuda de targets
 	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':|##' '{printf "  %-10s %s\n", $$1, $$3}'
+
+install-monitor-tls: ## Instalar servicio de monitorio TLS
+	@echo "Instalando servicio en systemd..."
+	@sed "s|{{APP_DIR}}|$(APP_DIR)|g" systemd/$(SERVICE) > $(SERVICE)
+	@sudo mv $(SERVICE) $(SERVICE_PATH)
+	@sudo systemctl daemon-reload
+	@sudo systemctl enable $(SERVICE)
+	@echo "Servicio instalado en $(SERVICE_PATH)"
+
+start-monitor-tls: ##  Iniciar el servicio de monitoreo TLS en segundo plano
+	@sudo systemctl start $(SERVICE)
+	@echo "Servicio iniciado."
+
+stop-monitor-tls: ## Detener el servicio de monitoreo TLS en segundo plano
+	@sudo systemctl stop $(SERVICE)
+	@echo "Servicio detenido."
+
+delete-monitor-tls: ## Eliminar el servicio de monitoreo TLS de systemd
+	@echo "Deteniendo y eliminando servicio..."
+	@sudo systemctl stop $(SERVICE)
+	@sudo systemctl disable $(SERVICE)
+	@sudo rm -f $(SERVICE_PATH)
+	@sudo systemctl daemon-reload
+	@echo "Servicio eliminado."
+
+status-monitor-tls: ## State systemd del servicio de monitoreo TLS
+	@sudo systemctl status $(SERVICE)
+
+logs-monitor-tls: ## Verificacion TLS con logs con journalctl
+	@sudo journalctl -u $(SERVICE) -f
 
 OBJETIVO ?=google.com
 SERVIDOR ?=8.8.8.8
