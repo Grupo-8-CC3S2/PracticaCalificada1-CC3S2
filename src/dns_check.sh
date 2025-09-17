@@ -11,3 +11,5 @@ mkdir -v -p "$OUT_DIR"
 
 echo "DNS CHECK ($TARGET con $DNS_SERVER)" > "$OUT_DIR/dns_check.txt"
 dig @"$DNS_SERVER" A "$TARGET" >> "$OUT_DIR/dns_check.txt" 2>&1
+
+echo "DNS check guardado en $OUT_DIR/dns_check.txt"
