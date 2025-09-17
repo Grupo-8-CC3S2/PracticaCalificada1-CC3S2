@@ -65,10 +65,15 @@ pack: ## Genera paquete reproducible básico con out/ y docs/
 	@echo "[pack] paquete: $(DIST_DIR)/$(APP_NAME)-$(RELEASE).tar.gz"
 
 clean: ## Limpieza segura de out/ y dist/
-	@rm -rf $(OUT_DIR) $(DIST_DIR)
+	@sudo rm -rf $(OUT_DIR) $(DIST_DIR)
 	@echo "[clean] limpieza completada"
 
 help: ## Muestra ayuda de targets
 	@echo "Targets disponibles:"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## ' $(MAKEFILE_LIST) | awk -F':|##' '{printf "  %-10s %s\n", $$1, $$3}'
 
+OBJETIVO ?=google.com
+SERVIDOR ?=8.8.8.8
+.PHONY: run-bash
+run-bash: clean
+	@ sudo TARGET=${OBJETIVO} DNS_SERVER=${SERVIDOR} bash src/dns_check.sh
