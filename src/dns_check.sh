@@ -21,7 +21,14 @@ parseo_grep(){
         grep -E '([0-9]{1,3}\.){3}([0-9]{1,3}){1}' ${ARCHIVO} > ${OUT_DIR}/parseo_grep.txt;fi
 }
  
+parseo_cut() {
+    echo "parseo con cut"
+    if [ -f "$OUT_DIR/parseo_grep.txt" ]; then
+        sed -n '3,8p' "$OUT_DIR/parseo_grep.txt" | cut -d ' ' -f5 > "$OUT_DIR/parseo_cut.txt"
+    fi
+}
+
 parseo_grep
- 
+parseo_cut
 
 
