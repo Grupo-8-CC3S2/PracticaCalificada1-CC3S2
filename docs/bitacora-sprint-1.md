@@ -1,3 +1,24 @@
+
+## Bitácora Sprint-1: Makefile inicial con targets obligatorios
+
+Estudiante: Sanchez Vega
+## Comandos ejecutados
+- `make help` → mostró la lista de targets.
+- `make tools` → verificó herramientas, creó `out/tools.ok`.
+- `make build` → creó `out/build.ok`.
+- `make run`   → creó `out/run.log`.
+- `make test`  → creó `out/test.tap` con 1 prueba "smoke sprint1".
+- `make pack`  → generó `dist/pc1-proy5-v0.1.tar.gz`.
+- `make clean` → eliminó `out/` y `dist/`.
+
+## Salidas relevantes
+- `out/tools.ok`: tools-ok-1757991953
+- `out/build.ok`: build-1757993275
+- `out/dns_check.txt`
+- `out/http_check.txt`
+- `out/test.tap`: 1..0
+
+
 ## Bitácora Sprint-1: Chequeo HTTP con script y pruebas Bats
 
 Estudiante: Quispe Villena
@@ -94,3 +115,7 @@ test_dns.bats
 
 - Todas las tareas fueron probadas en Ubuntu 24.04.
 - Se usó Git para control de versiones.
+
+
+
+
