@@ -27,8 +27,13 @@ parseo_cut() {
         sed -n '3,8p' "$OUT_DIR/parseo_grep.txt" | cut -d ' ' -f5 > "$OUT_DIR/parseo_cut.txt"
     fi
 }
-
+parseo_awk() {
+    echo "parseando con awk"
+    if [ -f "$ARCHIVO" ]; then
+        awk '/\tA\t/ {print $5}' "$ARCHIVO" > "$OUT_DIR/parseo_awk.txt"
+    fi
+}
 parseo_grep
 parseo_cut
-
+parseo_awk
 
