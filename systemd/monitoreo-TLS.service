@@ -1,0 +1,12 @@
+[Unit]
+Description=Monitoreo básico de TLS
+After=network.target
+
+[Service]
+Type=simple
+EnvironmentFile={{APP_DIR}}/env.conf
+ExecStart=/bin/bash {{APP_DIR}}/src/monitor_TLS.sh
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

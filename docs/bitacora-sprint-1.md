@@ -111,6 +111,32 @@ test_dns.bats
 
 1 test, 0 failures
 
+## Procesamiento con Unix toolKit 
+
+### Parseado de salida de los comandos curl y dig con grep, cut , awk, ..
+en dns_check.sh
+se agregan las funciones 
+parseo_grep() 
+dentro grep toma el contenido de dns_check.txt y busca el pattern = ([0-9]{1,3}\.){3} los tres primeros bytes de la direccion IPv4 luego ([0-9]{1,3}){1} para el ultimo byte
+de modo que se tienen las lineas buscadas
+``  if [ -f ${archivo}]; then grep -E PATRON archivo > parseo_grep.txt; fi``
+
+se agrega la funcion parseo_cut
+
+
+se agrega la funcion parseo_awk
+awk PATRON_DE_BUSQUEDA ACCION ARCHIVO
+se busca '/PATRON/' '\tA\t' e imprimir la
+### Guardando los resultados procesados en out/
+añadiendo un direccionamiento para guardarlo en un de archivo de salida
+`` > parseo_grep.txt``
+`` > parseo_cut.txt``
+`` > parseo_awk.txt``
+
+![video]()
+
+
+
 ```
 
 - Todas las tareas fueron probadas en Ubuntu 24.04.
