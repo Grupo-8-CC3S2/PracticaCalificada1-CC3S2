@@ -68,7 +68,7 @@ pack: ## Genera paquete reproducible básico con out/ y docs/
 	@echo "[pack] paquete: $(DIST_DIR)/$(APP_NAME)-$(RELEASE).tar.gz"
 
 clean: ## Limpieza segura de out/ y dist/
-	@rm -rf $(OUT_DIR) $(DIST_DIR)
+	@sudo rm -rf $(OUT_DIR) $(DIST_DIR)
 	@echo "[clean] limpieza completada"
 
 help: ## Muestra ayuda de targets
@@ -104,3 +104,9 @@ status-monitor-tls: ## State systemd del servicio de monitoreo TLS
 
 logs-monitor-tls: ## Verificacion TLS con logs con journalctl
 	@sudo journalctl -u $(SERVICE) -f
+
+OBJETIVO ?=google.com
+SERVIDOR ?=8.8.8.8
+.PHONY: run-bash
+run-bash: clean
+	@ sudo TARGET=${OBJETIVO} DNS_SERVER=${SERVIDOR} bash src/dns_check.sh

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET="${TARGET}"
+TARGET="${TARGET:-google.com}"
 OUT_DIR="out"
 mkdir -p "$OUT_DIR"
 
